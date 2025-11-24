@@ -125,3 +125,30 @@ export interface ActivityFilter {
   production_line_id?: number;
   search?: string;
 }
+
+export interface User {
+  id: number;
+  username: string;
+  full_name: string;
+  email?: string;
+  role: 'admin' | 'manager' | 'operator' | 'viewer';
+  workshop_id?: number;
+  production_line_id?: number;
+  is_active: boolean;
+  last_login?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface LoginCredentials {
+  username: string;
+  password: string;
+  remember_me?: boolean;
+}
+
+export interface LoginResponse {
+  user: User;
+  token: string;
+  refresh_token: string;
+  expires_at: string;
+}
