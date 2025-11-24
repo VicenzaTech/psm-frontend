@@ -131,9 +131,9 @@ export interface ActivityFilter {
 export interface User {
   id: number;
   username: string;
-  full_name: string;
   email?: string;
   role: 'admin' | 'manager' | 'operator' | 'viewer';
+  permissions: string[];  // Add this line
   workshop_id?: number;
   production_line_id?: number;
   is_active: boolean;
@@ -143,14 +143,25 @@ export interface User {
 }
 
 export interface LoginCredentials {
-  username: string;
+  identifier: string;
   password: string;
   remember_me?: boolean;
 }
 
 export interface LoginResponse {
-  user: User;
-  token: string;
-  refresh_token: string;
-  expires_at: string;
+  status: string;
+  data: {
+    tokens: {
+      accessToken: string;
+      refreshToken: string;
+    };
+    user: {
+      email: string;
+      username: string;
+      id: number;
+      roles: string[];
+      permissions: string[];
+    };
+    sessionId: string;
+  };
 }

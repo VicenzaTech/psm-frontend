@@ -5,7 +5,7 @@ import Head from 'next/head';
 import styles from '../styles/Login.module.css';
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { login, isLoading, error } = useAuthStore();
@@ -14,7 +14,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login({ username, password });
+      await login({ identifier, password });
       router.push('/');
     } catch (error) {
       // Error is handled by the store
@@ -32,14 +32,14 @@ export default function LoginPage() {
             <h1 className={styles.loginTitle}>PSM System</h1>
             <p className={styles.loginSubtitle}>Sign in to your account</p>
           </div>
-          
+
           <div className={styles.formSection}>
             {error && (
               <div className={styles.errorMessage}>
                 {error}
               </div>
             )}
-            
+
             <form onSubmit={handleSubmit} style={{ marginBottom: '1.5rem' }}>
               <div className={styles.formGroup}>
                 <label htmlFor="username" className={styles.formLabel}>
@@ -53,8 +53,8 @@ export default function LoginPage() {
                     required
                     className={styles.formInput}
                     placeholder="Enter your username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
                   />
                   <span className={styles.inputIcon}>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
@@ -122,7 +122,7 @@ export default function LoginPage() {
             <div className={styles.divider}>
               <span className={styles.dividerText}>Don't have an account?</span>
             </div>
-            
+
             <button className={styles.contactButton}>
               Contact Administrator
             </button>

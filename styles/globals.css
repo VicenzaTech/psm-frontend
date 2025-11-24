@@ -177,6 +177,135 @@ body {
   color: #2c3e50;
 }
 
+/* Enhanced user dropdown global styles so Layout dropdown looks consistent */
+.user-info {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 22px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.user-info:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.user-info.active {
+  background: rgba(99, 102, 241, 0.08);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.06);
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 30px rgba(2, 6, 23, 0.08);
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(-6px);
+  visibility: hidden;
+  transition: all 160ms ease;
+}
+
+.user-info.active .user-dropdown {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.dropdown-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-weight: 700;
+}
+
+.dropdown-username {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.dropdown-email {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: rgba(2, 6, 23, 0.04);
+  margin: 6px 0;
+}
+
+.dropdown-item {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #0f172a;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.dropdown-item:hover {
+  background: rgba(99, 102, 241, 0.06);
+  color: #4f46e5;
+}
+
+.dropdown-item:focus {
+  outline: none;
+}
+
+.dropdown-item:focus-visible {
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  border-radius: 8px;
+}
+
+.dropdown-icon {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(79, 70, 229, 0.08);
+  color: #4f46e5;
+}
+
+.dropdown-item span {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.dropdown-arrow svg {
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.user-info.active .dropdown-arrow svg {
+  transform: rotate(180deg);
+}
+
 /* Content Area */
 .content {
   padding: 30px;

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { LoginCredentials, LoginResponse, User } from '../types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5556/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
 class AuthService {
     private client: AxiosInstance;
@@ -51,12 +51,13 @@ class AuthService {
     }
 
     async login(credentials: LoginCredentials): Promise<LoginResponse> {
-        const response: AxiosResponse<LoginResponse> = await this.client.post(
+        const response = await this.client.post<LoginResponse>(
             '/auth/login',
             credentials
         );
-        localStorage.setItem('auth_token', response.data.token);
-        localStorage.setItem('refresh_token', response.data.refresh_token);
+        const { data } = response.data;
+        localStorage.setItem('auth_token', data.tokens.accessToken);
+        localStorage.setItem('refresh_token', data.tokens.refreshToken);
         return response.data;
     }
 
@@ -69,14 +70,18 @@ class AuthService {
         }
     }
 
-    async refreshToken(refreshToken: string): Promise<LoginResponse> {
-        const response: AxiosResponse<LoginResponse> = await this.client.post(
-            '/auth/refresh',
+    async refreshToken(refreshToken: string): Promise<{ token: string; refresh_token: string }> {
+        const response = await this.client.post<LoginResponse>(
+            '/auth/refresh-token',
             { refresh_token: refreshToken }
         );
-        localStorage.setItem('auth_token', response.data.token);
-        localStorage.setItem('refresh_token', response.data.refresh_token);
-        return response.data;
+        const { tokens } = response.data.data;
+        localStorage.setItem('auth_token', tokens.accessToken);
+        localStorage.setItem('refresh_token', tokens.refreshToken);
+        return { 
+            token: tokens.accessToken, 
+            refresh_token: tokens.refreshToken 
+        };
     }
 
     async getCurrentUser(): Promise<User> {
@@ -86,3 +91,7 @@ class AuthService {
 }
 
 export const authService = new AuthService();
+
+export const getToken = (): string | null => {
+  return localStorage.getItem('auth_token'); // or however you store your token
+};

@@ -52,6 +52,7 @@ export const BrickTypeTable: React.FC<BrickTypeTableProps> = ({
             <th>SL khoán 31 ngày</th>
             <th>Cộng khoán giảm chu kỳ</th>
             <th>Giảm khoán tăng chu kỳ</th>
+            <th>Trạng thái</th>
             <th>Thao tác</th> {/* This column should be the last one */}
           </tr>
         </thead>
@@ -75,6 +76,9 @@ export const BrickTypeTable: React.FC<BrickTypeTableProps> = ({
                   <td>{brickType.sanLuongKhoan31Ngay.toLocaleString()}</td>
                   <td>{brickType.congKhoanGiamChuKy.toLocaleString()}</td>
                   <td>{brickType.giamKhoanTangChuKy.toLocaleString()}</td>
+                  <td className="status-cell" title={brickType.isActive ? "Đang hoạt động" : "Ngừng hoạt động"}>
+                    {brickType.isActive ? "🟢" : "⚪"}
+                  </td>
                   <td>
                     <div className="action-buttons">
                       <Button
@@ -83,12 +87,12 @@ export const BrickTypeTable: React.FC<BrickTypeTableProps> = ({
                       >
                         Sửa
                       </Button>
-                      <Button
+                      {/* <Button
                         className="btn-danger btn-small"
                         onClick={() => onDelete(brickType.id)}
                       >
                         Xoá
-                      </Button>
+                      </Button> */}
                     </div>
                   </td>
                 </tr>

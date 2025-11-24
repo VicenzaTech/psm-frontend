@@ -28,28 +28,36 @@ export const useAuthStore = create<AuthState>()(
             error: null,
 
             login: async (credentials) => {
-                set({ isLoading: true, error: null });
-                try {
-                    const { user, token, refresh_token } = await authService.login(credentials);
-                    set({
-                        user,
-                        token,
-                        refreshToken: refresh_token,
-                        isAuthenticated: true,
-                        isLoading: false,
-                    });
-                    // Lưu token vào localStorage sau khi login thành công
-                    if (token) localStorage.setItem('auth_token', token);
-                    if (refresh_token) localStorage.setItem('refresh_token', refresh_token);
-                } catch (error) {
-                    set({
-                        error: error instanceof Error ? error.message : 'Login failed',
-                        isLoading: false,
-                    });
-                    throw error;
-                }
-            },
-
+    set({ isLoading: true, error: null });
+    try {
+        const response = await authService.login(credentials);
+        const { data } = response;
+        const userData = {
+            id: data.user.id,
+            username: data.user.username,
+            email: data.user.email,
+            role: data.user.roles[0] as 'admin' | 'manager' | 'operator' | 'viewer',
+            permissions: data.user.permissions,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        };
+        
+        set({
+            user: userData,
+            token: data.tokens.accessToken,
+            refreshToken: data.tokens.refreshToken,
+            isAuthenticated: true,
+            isLoading: false,
+        });
+    } catch (error: any) {
+        set({ 
+            error: error.response?.data?.message || 'Login failed', 
+            isLoading: false 
+        });
+        throw error;
+    }
+},
             logout: () => {
                 authService.logout().catch(console.error);
                 set({
@@ -79,23 +87,41 @@ export const useAuthStore = create<AuthState>()(
             clearError: () => set({ error: null }),
 
             initializeAuth: async () => {
-                const { token } = get();
-                if (!token) return;
-
-                set({ isLoading: true });
-                try {
-                    const user = await authService.getCurrentUser();
-                    set({ user, isAuthenticated: true });
-                } catch (error) {
-                    get().logout();
-                } finally {
-                    set({ isLoading: false });
+                const { token, user } = get();
+                if (token && user) {
+                    try {
+                        // If we have both token and user in localStorage, consider the user authenticated
+                        set({
+                            isAuthenticated: true,
+                            isLoading: false,
+                            user: user,
+                            token: token
+                        });
+                    } catch (error) {
+                        console.error('Failed to initialize auth:', error);
+                        set({
+                            isAuthenticated: false,
+                            isLoading: false,
+                            user: null,
+                            token: null,
+                            refreshToken: null
+                        });
+                    }
+                } else {
+                    set({
+                        isAuthenticated: false,
+                        isLoading: false,
+                        user: null,
+                        token: null,
+                        refreshToken: null
+                    });
                 }
             },
         }),
         {
             name: 'auth-storage',
             storage: createJSONStorage(() => localStorage),
+            // Only persist these fields to prevent issues
             partialize: (state) => ({
                 token: state.token,
                 refreshToken: state.refreshToken,
