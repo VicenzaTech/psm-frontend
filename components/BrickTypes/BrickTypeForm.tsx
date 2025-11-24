@@ -20,36 +20,40 @@ export const BrickTypeForm: React.FC<BrickTypeFormProps> = ({
 }) => {
   const [formData, setFormData] = useState<BrickType>({
     id: 0,
+    code: '',
     name: '',
     size: '',
+    size_x: 0,
+    size_y: 0,
     type: 'porcelain',
-    workshop_id: 0,
-    production_line_id: 0,
-    chu_ky_khoan: 0,
-    san_luong_ra_lo_per_day: 0,
-    san_luong_chinh_pham_per_day: 0,
-    so_ngay_tru_khoan: 0,
-    san_luong_khoan_30_ngay: 0,
-    san_luong_khoan_31_ngay: 0,
-    cong_khoan_giam_chu_ky: 0,
-    giam_khoan_tang_chu_ky: 0,
-    loai_mai: 'mai_nong',
-    thoi_gian_cho_mai_nguoi_hours: 0,
-    ty_le_A1_khoan: 0,
-    ty_le_A2_khoan: 0,
-    ty_le_cat_lo_khoan: 0,
-    ty_le_phe_1_khoan: 0,
-    ty_le_phe_2_khoan: 0,
-    ty_le_phe_huy_khoan: 0,
-    don_gia_thuong_A1: 0,
-    don_gia_thuong_A2: 0,
-    don_gia_thuong_cat_lo: 0,
-    don_gia_phat_san_luong: 0,
-    is_active: true,
-    created_at: new Date(),
-    updated_at: new Date()
+    workshopId: 1,
+    productionLineId: 1,
+    workshopName: '',
+    productionLineName: '',
+    chuKyKhoan: 0,
+    sanLuongRaLoPerDay: 0,
+    sanLuongChinhPhamPerDay: 0,
+    soNgayTruKhoan: 0,
+    sanLuongKhoan30Ngay: 0,
+    sanLuongKhoan31Ngay: 0,
+    congKhoanGiamChuKy: 0,
+    giamKhoanTangChuKy: 0,
+    loaiMai: 'mai_nong',
+    thoiGianChoMaiNguoiHours: 0,
+    tyLeA1Khoan: 0,
+    tyLeA2Khoan: 0,
+    tyLeCatLoKhoan: 0,
+    tyLePhe1Khoan: 0,
+    tyLePhe2Khoan: 0,
+    tyLePheHuyKhoan: 0,
+    donGiaThuongA1: 0,
+    donGiaThuongA2: 0,
+    donGiaThuongCatLo: 0,
+    donGiaPhatSanLuong: 0,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date()
   });
-
   const [filteredProductionLines, setFilteredProductionLines] = useState<Array<{ id: number; name: string }>>([]);
 
   useEffect(() => {
@@ -59,42 +63,48 @@ export const BrickTypeForm: React.FC<BrickTypeFormProps> = ({
   }, [brickType]);
 
   useEffect(() => {
-    if (formData.workshop_id) {
-      const filtered = productionLines.filter(
-        line => line.workshop_id === formData.workshop_id
-      );
-      setFilteredProductionLines(filtered);
-    }
-  }, [formData.workshop_id, productionLines]);
+    // Only show production lines with IDs 1, 2, 5, 6
+    const allowedLineIds = [1, 2, 5, 6];
+    const filtered = productionLines.filter(
+      line => allowedLineIds.includes(line.id)
+    );
+    setFilteredProductionLines(filtered);
+  }, [productionLines]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: type === 'number' ? parseFloat(value) || 0 : value
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
-      ...formData,
-      id: brickType?.id || Date.now(),
-      created_at: brickType?.created_at || new Date(),
-      updated_at: new Date()
-    });
+    try {
+      await onSave({
+        ...formData,
+        giamKhoanTangChuKy: formData.giamKhoanTangChuKy || 0,
+        id: brickType?.id || Date.now(),
+        createdAt: brickType?.createdAt || new Date(),
+        updatedAt: new Date()
+      });
+    } catch (error: any) {
+      // Show error message to the user
+      alert(error.message || 'Có lỗi xảy ra khi lưu loại gạch');
+    }
   };
 
   return (
     <form className="brick-type-form" onSubmit={handleSubmit}>
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="workshop_id">Phân xưởng</label>
+          <label htmlFor="workshopId">Phân xưởng</label>
           <select
-            id="workshop_id"
-            name="workshop_id"
-            value={formData.workshop_id}
+            id="workshopId"
+            name="workshopId"
+            value={formData.workshopId}
             onChange={handleChange}
             required
           >
@@ -106,13 +116,13 @@ export const BrickTypeForm: React.FC<BrickTypeFormProps> = ({
             ))}
           </select>
         </div>
-        
+
         <div className="form-group">
-          <label htmlFor="production_line_id">Dây chuyền</label>
+          <label htmlFor="productionLineId">Dây chuyền</label>
           <select
-            id="production_line_id"
-            name="production_line_id"
-            value={formData.production_line_id}
+            id="productionLineId"
+            name="productionLineId"
+            value={formData.productionLineId}
             onChange={handleChange}
             required
           >
@@ -138,7 +148,7 @@ export const BrickTypeForm: React.FC<BrickTypeFormProps> = ({
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label htmlFor="size">Kích thước</label>
           <input
@@ -169,13 +179,13 @@ export const BrickTypeForm: React.FC<BrickTypeFormProps> = ({
             <option value="kimsa">Kimsa</option>
           </select>
         </div>
-        
+
         <div className="form-group">
-          <label htmlFor="loai_mai">Loại mài</label>
+          <label htmlFor="loaiMai">Loại mài</label>
           <select
-            id="loai_mai"
-            name="loai_mai"
-            value={formData.loai_mai}
+            id="loaiMai"
+            name="loaiMai"
+            value={formData.loaiMai}
             onChange={handleChange}
           >
             <option value="mai_nong">Mài nóng</option>
@@ -187,24 +197,24 @@ export const BrickTypeForm: React.FC<BrickTypeFormProps> = ({
 
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="chu_ky_khoan">Chu kỳ khoán (phút)</label>
+          <label htmlFor="chuKyKhoan">Chu kỳ khoán (phút)</label>
           <input
             type="number"
-            id="chu_ky_khoan"
-            name="chu_ky_khoan"
-            value={formData.chu_ky_khoan}
+            id="chuKyKhoan"
+            name="chuKyKhoan"
+            value={formData.chuKyKhoan}
             onChange={handleChange}
             required
           />
         </div>
-        
+
         <div className="form-group">
-          <label htmlFor="san_luong_ra_lo_per_day">Sản lượng ra lò/ngày (m²)</label>
+          <label htmlFor="sanLuongRaLoPerDay">Sản lượng ra lò/ngày (m²)</label>
           <input
             type="number"
-            id="san_luong_ra_lo_per_day"
-            name="san_luong_ra_lo_per_day"
-            value={formData.san_luong_ra_lo_per_day}
+            id="sanLuongRaLoPerDay"
+            name="sanLuongRaLoPerDay"
+            value={formData.sanLuongRaLoPerDay}
             onChange={handleChange}
             required
           />
@@ -213,24 +223,24 @@ export const BrickTypeForm: React.FC<BrickTypeFormProps> = ({
 
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="san_luong_chinh_pham_per_day">Sản lượng chính phẩm/ngày (m²)</label>
+          <label htmlFor="sanLuongChinhPhamPerDay">Sản lượng chính phẩm/ngày (m²)</label>
           <input
             type="number"
-            id="san_luong_chinh_pham_per_day"
-            name="san_luong_chinh_pham_per_day"
-            value={formData.san_luong_chinh_pham_per_day}
+            id="sanLuongChinhPhamPerDay"
+            name="sanLuongChinhPhamPerDay"
+            value={formData.sanLuongChinhPhamPerDay}
             onChange={handleChange}
             required
           />
         </div>
-        
+
         <div className="form-group">
-          <label htmlFor="so_ngay_tru_khoan">Số ngày trừ khoán</label>
+          <label htmlFor="soNgayTruKhoan">Số ngày trừ khoán</label>
           <input
             type="number"
-            id="so_ngay_tru_khoan"
-            name="so_ngay_tru_khoan"
-            value={formData.so_ngay_tru_khoan}
+            id="soNgayTruKhoan"
+            name="soNgayTruKhoan"
+            value={formData.soNgayTruKhoan}
             onChange={handleChange}
             required
           />
@@ -239,24 +249,24 @@ export const BrickTypeForm: React.FC<BrickTypeFormProps> = ({
 
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="san_luong_khoan_30_ngay">Sản lượng khoán 30 ngày (m²)</label>
+          <label htmlFor="sanLuongKhoan30Ngay">Sản lượng khoán 30 ngày (m²)</label>
           <input
             type="number"
-            id="san_luong_khoan_30_ngay"
-            name="san_luong_khoan_30_ngay"
-            value={formData.san_luong_khoan_30_ngay}
+            id="sanLuongKhoan30Ngay"
+            name="sanLuongKhoan30Ngay"
+            value={formData.sanLuongKhoan30Ngay}
             onChange={handleChange}
             required
           />
         </div>
-        
+
         <div className="form-group">
-          <label htmlFor="san_luong_khoan_31_ngay">Sản lượng khoán 31 ngày (m²)</label>
+          <label htmlFor="sanLuongKhoan31Ngay">Sản lượng khoán 31 ngày (m²)</label>
           <input
             type="number"
-            id="san_luong_khoan_31_ngay"
-            name="san_luong_khoan_31_ngay"
-            value={formData.san_luong_khoan_31_ngay}
+            id="sanLuongKhoan31Ngay"
+            name="sanLuongKhoan31Ngay"
+            value={formData.sanLuongKhoan31Ngay}
             onChange={handleChange}
             required
           />
@@ -265,24 +275,24 @@ export const BrickTypeForm: React.FC<BrickTypeFormProps> = ({
 
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="cong_khoan_giam_chu_ky">Cộng khoán khi giảm chu kỳ (m²/ngày)</label>
+          <label htmlFor="congKhoanGiamChuKy">Cộng khoán khi giảm chu kỳ (m²/ngày)</label>
           <input
             type="number"
-            id="cong_khoan_giam_chu_ky"
-            name="cong_khoan_giam_chu_ky"
-            value={formData.cong_khoan_giam_chu_ky}
+            id="congKhoanGiamChuKy"
+            name="congKhoanGiamChuKy"
+            value={formData.congKhoanGiamChuKy}
             onChange={handleChange}
             required
           />
         </div>
-        
+
         <div className="form-group">
-          <label htmlFor="giam_khoan_tang_chu_ky">Giảm khoán khi tăng chu kỳ (m²/ngày)</label>
+          <label htmlFor="giamKhoanTangChuKy">Giảm khoán khi tăng chu kỳ (m²/ngày)</label>
           <input
             type="number"
-            id="giam_khoan_tang_chu_ky"
-            name="giam_khoan_tang_chu_ky"
-            value={formData.giam_khoan_tang_chu_ky}
+            id="giamKhoanTangChuKy"
+            name="giamKhoanTangChuKy"
+            value={formData.giamKhoanTangChuKy}
             onChange={handleChange}
             required
           />
