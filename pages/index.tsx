@@ -1,7 +1,7 @@
 // pages/index.tsx
 import React from 'react';
-import { Layout } from '../components/Layout/Layout';
-import { DashboardOverview } from '../components/Dashboard/DashboardOverview';
+import { Layout } from '@/components/Layout/Layout';
+import { DashboardOverview } from '@/components/Dashboard/DashboardOverview';
 
 export default function HomePage() {
   return (

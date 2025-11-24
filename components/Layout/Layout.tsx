@@ -1,7 +1,8 @@
 // components/Layout/Layout.tsx
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 interface LayoutProps {
   children: ReactNode;
@@ -10,6 +11,7 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children, title = "Tổng quan sản xuất" }) => {
   const [sidebarActive, setSidebarActive] = useState(false);
+  const { user } = useAuthStore()
   const router = useRouter();
 
   const menuItems = [
@@ -28,6 +30,12 @@ export const Layout: React.FC<LayoutProps> = ({ children, title = "Tổng quan s
   const toggleSidebar = () => {
     setSidebarActive(!sidebarActive);
   };
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+    }
+  }, [user]);
 
   return (
     <div className="app-container">
