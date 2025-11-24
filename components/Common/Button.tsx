@@ -1,19 +1,23 @@
-// components/Common/Button.tsx
-import React from 'react';
+// components/Common/Button.tsx - Cập nhật để hỗ trợ màu đỏ
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'danger';
   size?: 'sm' | 'md' | 'lg';
+  onClick?: () => void;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  className?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
   children,
   variant = 'primary',
   size = 'md',
-  className = '',
+  onClick,
+  disabled = false,
   type = 'button',
-  ...rest
+  className = ''
 }) => {
   const getClasses = () => {
     let classes = 'btn';
@@ -38,7 +42,8 @@ export const Button: React.FC<ButtonProps> = ({
     <button
       type={type}
       className={getClasses()}
-      {...rest}
+      onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>

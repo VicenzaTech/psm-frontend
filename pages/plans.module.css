@@ -1,0 +1,51 @@
+.filterBar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 18px;
+  padding: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  border: 1px solid #e6eef6;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04);
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 12px;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+.input {
+  height: 36px;
+  padding: 6px 10px;
+  border: 1px solid #d1e3f0;
+  border-radius: 6px;
+  background: #fff;
+  outline: none;
+}
+
+.resetBtn {
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border-radius: 6px;
+}
+
+.sortNote {
+  margin-left: auto;
+  font-size: 13px;
+  color: #475569;
+}
+
+.muted {
+  color: #64748b;
+  font-size: 13px;
+}

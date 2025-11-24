@@ -16,6 +16,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, title = "Tổng quan s
     { id: 'dashboard', icon: '📊', text: 'Tổng quan', href: '/' },
     { id: 'plans', icon: '📋', text: 'Kế hoạch sản xuất', href: '/plans' },
     { id: 'stages', icon: '⚙️', text: 'Quản lý công đoạn', href: '/stage-management' },
+    { id: 'brick-types', icon: '🧱', text: 'Quản lý dòng gạch', href: '/brick-types' },
+    { id: 'activity-logs', icon: '📝', text: 'Lịch sử hoạt động', href: '/activity-logs' },
     { id: 'quality', icon: '✅', text: 'Quản lý chất lượng', href: '/quality' },
     { id: 'reports', icon: '📈', text: 'Báo cáo', href: '/reports' },
     { id: 'devices', icon: '🔧', text: 'Thiết bị IoT', href: '/devices' },
