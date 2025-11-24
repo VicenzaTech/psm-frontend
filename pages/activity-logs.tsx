@@ -10,8 +10,19 @@ import { ActivityFilterComponent } from '../components/ActivityLogs/ActivityFilt
 import { ActivityDetailModal } from '../components/ActivityLogs/ActivityDetailModal';
 import { ActivityLog, ActivityFilter } from '../types';
 
-// Mock data chi tiết hơn
+// Mock data chi tiết hơn (deterministic) — use a seeded RNG and fixed base date
 const generateDetailedMockActivities = (): ActivityLog[] => {
+  // Seeded PRNG (mulberry32) to ensure identical output on server and client
+  const mulberry32 = (a: number) => {
+    return () => {
+      let t = (a += 0x6d2b79f5);
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  };
+  const rng = mulberry32(123456789);
+  const baseDate = new Date('2024-11-30T12:00:00.000Z');
   const users = [
     { id: 1, username: 'admin', full_name: 'Nguyễn Văn Admin', role: 'admin' },
     { id: 2, username: 'manager1', full_name: 'Trần Thị Manager', role: 'manager' },
@@ -319,16 +330,16 @@ const generateDetailedMockActivities = (): ActivityLog[] => {
 
   // Thêm các hoạt động khác cho demo
   for (let i = 0; i < 50; i++) {
-    const user = users[Math.floor(Math.random() * users.length)];
+    const user = users[Math.floor(rng() * users.length)];
     const actionTypes = ['create', 'update', 'start', 'stop', 'configure'];
     const entityTypes = ['production_plan', 'stage_assignment', 'brick_type'];
-    const actionType = actionTypes[Math.floor(Math.random() * actionTypes.length)];
-    const entityType = entityTypes[Math.floor(Math.random() * entityTypes.length)];
-    
-    const date = new Date();
-    date.setDate(date.getDate() - Math.floor(Math.random() * 7));
-    date.setHours(date.getHours() - Math.floor(Math.random() * 24));
-    
+    const actionType = actionTypes[Math.floor(rng() * actionTypes.length)];
+    const entityType = entityTypes[Math.floor(rng() * entityTypes.length)];
+
+    const date = new Date(baseDate);
+    date.setDate(date.getDate() - Math.floor(rng() * 7));
+    date.setHours(date.getHours() - Math.floor(rng() * 24));
+
     activities.push({
       id: `activity-${activityId++}`,
       user_id: user.id,
@@ -337,18 +348,18 @@ const generateDetailedMockActivities = (): ActivityLog[] => {
       action: actionType,
       action_type: actionType as any,
       entity_type: entityType as any,
-      entity_id: Math.floor(Math.random() * 100) + 1,
-      entity_name: `${entityType}-${Math.floor(Math.random() * 10) + 1}`,
+      entity_id: Math.floor(rng() * 100) + 1,
+      entity_name: `${entityType}-${Math.floor(rng() * 10) + 1}`,
       description: `Thực hiện hành động ${actionType} trên ${entityType}`,
       metadata: {
         test_field: 'test_value',
         timestamp: date.toISOString()
       },
-      ip_address: `192.168.1.${Math.floor(Math.random() * 255)}`,
+      ip_address: `192.168.1.${Math.floor(rng() * 255)}`,
       user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       timestamp: date,
-      workshop_id: Math.random() > 0.5 ? 1 : 2,
-      production_line_id: Math.floor(Math.random() * 6) + 1
+      workshop_id: rng() > 0.5 ? 1 : 2,
+      production_line_id: Math.floor(rng() * 6) + 1
     });
   }
 
