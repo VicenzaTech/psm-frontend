@@ -8,11 +8,17 @@ interface ActivityLogTableProps {
   onViewDetails: (activity: ActivityLog) => void;
 }
 
+const entityTypeToLabel: Record<string, string> = {
+  'BrickType': 'Dòng sản phẩm',
+  'User': 'Người dùng',
+}
+
 export const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
   activities,
   onViewDetails
 }) => {
   const getActionIcon = (actionType: string) => {
+    console.log('Determining icon for action type:', actionType);
     switch (actionType) {
       case 'create': return '➕';
       case 'update': return '✏️';
@@ -21,7 +27,7 @@ export const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
       case 'stop': return '⏹️';
       case 'approve': return '✅';
       case 'reject': return '❌';
-      case 'login': return '🔑';
+      case 'LOGIN_SUCCESS': return '🔑';
       case 'logout': return '🚪';
       case 'view': return '👁️';
       case 'export': return '📤';
@@ -190,10 +196,10 @@ export const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
             <tr key={activity.id} className="activity-row">
               <td style={{ whiteSpace: 'nowrap' }}>
                 <div style={{ fontSize: '13px', fontWeight: '500' }}>
-                  {formatTimestamp(activity.timestamp)}
+                  {formatTimestamp(activity.createdAt)}
                 </div>
                 <div style={{ fontSize: '11px', color: '#7f8c8d' }}>
-                  {new Date(activity.timestamp).toLocaleDateString('vi-VN')}
+                  {new Date(activity.createdAt).toLocaleDateString('vi-VN')}
                 </div>
               </td>
               <td>
@@ -211,7 +217,7 @@ export const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
                     fontWeight: '600',
                     flexShrink: 0
                   }}>
-                    {activity.user_full_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                    {activity.userId}
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <div style={{ 
@@ -232,11 +238,11 @@ export const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
               <td>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span style={{ fontSize: '16px' }}>
-                    {getActionIcon(activity.action_type)}
+                    {getActionIcon(activity.actionType)}
                   </span>
                   <div>
                     <div style={{ 
-                      color: getActionColor(activity.action_type),
+                      color: getActionColor(activity.actionType),
                       fontWeight: '500',
                       fontSize: '12px',
                       textTransform: 'uppercase'
@@ -249,9 +255,9 @@ export const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
               <td>
                 <div>
                   <div style={{ fontWeight: '500', fontSize: '14px' }}>
-                    {getEntityTypeLabel(activity.entity_type)}
+                    {entityTypeToLabel[activity.entityType] || activity.entityType}
                   </div>
-                  {activity.entity_name && (
+                  {activity.entityName && (
                     <div style={{ 
                       fontSize: '12px', 
                       color: '#7f8c8d',
@@ -259,7 +265,7 @@ export const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap'
                     }}>
-                      {activity.entity_name}
+                      {activity.entityName}
                     </div>
                   )}
                 </div>
@@ -270,15 +276,15 @@ export const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
                 </div>
                 
                 {/* Hiển thị thông tin kế hoạch sản xuất */}
-                {activity.entity_type === 'production_plan' && renderProductionPlanInfo(activity.metadata)}
+                {activity.entityType === 'production_plan' && renderProductionPlanInfo(activity.metadata)}
                 
                 {/* Hiển thị thông tin công đoạn */}
-                {activity.entity_type === 'stage_assignment' && renderStageInfo(activity.metadata)}
+                {activity.entityType === 'stage_assignment' && renderStageInfo(activity.metadata)}
                 
                 {/* Hiển thị metadata cho các entity khác */}
                 {activity.metadata && Object.keys(activity.metadata).length > 0 && 
-                 activity.entity_type !== 'production_plan' && 
-                 activity.entity_type !== 'stage_assignment' && (
+                 activity.entityType !== 'production_plan' && 
+                 activity.entityType !== 'stage_assignment' && (
                   <div style={{ marginTop: '5px' }}>
                     <button
                       className="btn-link"

@@ -100,19 +100,20 @@ export interface BrickType {
 
 export interface ActivityLog {
   id: string;
-  user_id: number;
+  userId: number;
   username: string;
   user_full_name: string;
   action: string;
-  action_type: 'create' | 'update' | 'delete' | 'start' | 'stop' | 'approve' | 'reject' | 'login' | 'logout' | 'view' | 'export' | 'import' | 'assign' | 'unassign' | 'update_parameters' | 'switch' | 'configure';
-  entity_type: 'production_plan' | 'stage_assignment' | 'brick_type' | 'quality_record' | 'user' | 'workshop' | 'production_line' | 'device' | 'report' | 'settings';
-  entity_id?: number;
-  entity_name?: string;
+  actionType: 'create' | 'update' | 'delete' | 'start' | 'stop' | 'approve' | 'reject' | 'LOGIN_SUCCESS' | 'logout' | 'view' | 'export' | 'import' | 'assign' | 'unassign' | 'update_parameters' | 'switch' | 'configure';
+  entityType: 'production_plan' | 'stage_assignment' | 'brick_type' | 'quality_record' | 'user' | 'workshop' | 'production_line' | 'device' | 'report' | 'settings';
+  entityId?: number;
+  entityName?: string;
   description: string;
   metadata?: Record<string, any>;
   ip_address: string;
   user_agent: string;
   timestamp: Date;
+  createdAt: Date;
   workshop_id?: number;
   production_line_id?: number;
 }
