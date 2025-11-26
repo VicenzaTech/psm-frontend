@@ -13,12 +13,16 @@ interface LayoutProps {
 export const Layout: React.FC<LayoutProps> = ({ children, title = "Tổng quan sản xuất" }) => {
   const [sidebarActive, setSidebarActive] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const { user, logout } = useAuthStore();
+  const { user, isAuthenticated, logout } = useAuthStore();
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
+    if (!isAuthenticated) {
+      logout();
+      router.replace('/login');
+    }
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
@@ -38,7 +42,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title = "Tổng quan s
       document.removeEventListener('click', handleClickOutside);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [isAuthenticated, logout, router]);
 
   const handleLogout = () => {
     logout();

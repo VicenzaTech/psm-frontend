@@ -1,5 +1,7 @@
 // pages/plans.tsx
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useAuthStore } from '../stores/useAuthStore';
 import { Layout } from '../components/Layout/Layout';
 import { Button } from '../components/Common/Button';
 import { productionLines, brickTypes } from '../data/mockData';
@@ -96,6 +98,15 @@ const mockProductionPlans: ProductionPlan[] = [
 ];
 
 export default function PlansPage() {
+  const router = useRouter();
+  const { isAuthenticated, logout } = useAuthStore();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      logout();
+      router.replace('/login');
+    }
+  }, [isAuthenticated, logout, router]);
   const [plans, setPlans] = useState<ProductionPlan[]>(mockProductionPlans);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
@@ -103,7 +114,7 @@ export default function PlansPage() {
   const [selectedPlan, setSelectedPlan] = useState<ProductionPlan | null>(null);
   const [filterStart, setFilterStart] = useState<string>('');
   const [filterEnd, setFilterEnd] = useState<string>('');
-  const [expandedIds, setExpandedIds] = useState<number[]>([]);
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
   const getStatusBadge = (status: PlanStatus) => {
@@ -151,9 +162,7 @@ export default function PlansPage() {
     }
   };
 
-  const toggleExpand = (id: number) => {
-    setExpandedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [id, ...prev]));
-  };
+
 
   const handleEditPlan = (plan: ProductionPlan) => {
     setSelectedPlan(plan);
@@ -316,12 +325,13 @@ export default function PlansPage() {
           <tbody>
             {displayedPlans.map((plan) => (
               <React.Fragment key={plan.id}>
-                <tr 
-                  onClick={() => toggleExpand(plan.id)} 
-                  style={{ 
+                <tr
+                  onMouseEnter={() => setHoveredId(plan.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                  style={{
                     cursor: 'pointer',
-                    borderBottom: expandedIds.includes(plan.id) ? 'none' : '1px solid #e9ecef',
-                    backgroundColor: expandedIds.includes(plan.id) ? '#f8f9fa' : 'transparent'
+                    borderBottom: hoveredId === plan.id ? 'none' : '1px solid #e9ecef',
+                    backgroundColor: hoveredId === plan.id ? '#f8f9fa' : 'transparent'
                   }}
                 >
                   <td style={{ padding: '12px 15px', fontWeight: '600' }}>{plan.planCode}</td>
@@ -336,7 +346,7 @@ export default function PlansPage() {
                   <td style={{ padding: '12px 15px' }}>{getStatusBadge(plan.status)}</td>
                   <td style={{ padding: '12px 15px', textAlign: 'center' }}>
                     <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
-                      <Button 
+                      {/* <Button 
                         className="btn-secondary" 
                         style={{ padding: '4px 8px', fontSize: '12px' }} 
                         onClick={(e) => { 
@@ -345,7 +355,7 @@ export default function PlansPage() {
                         }}
                       >
                         Chi tiết
-                      </Button>
+                      </Button> */}
                       <Button 
                         className="btn-secondary" 
                         style={{ padding: '4px 8px', fontSize: '12px' }} 
@@ -366,7 +376,7 @@ export default function PlansPage() {
                     </div>
                   </td>
                 </tr>
-                {expandedIds.includes(plan.id) && (
+                {hoveredId === plan.id && (
                   <tr>
                     <td colSpan={10} style={{ padding: '20px', backgroundColor: '#f8f9fa', borderBottom: '1px solid #e9ecef' }}>
                       <div style={{ display: 'flex', gap: '30px' }}>
