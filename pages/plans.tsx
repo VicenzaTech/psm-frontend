@@ -5,7 +5,7 @@ import { Button } from '../components/Common/Button';
 import { productionPlans } from '../data/mockData';
 import { ProductionPlan } from '../types';
 import NewPlanModal from '../components/ProductionPlans/NewPlanModal/NewPlanModal';
-import styles from './plans.module.css';
+import styles from '@/styles//plans.module.css';
 
 export default function PlansPage() {
   const [plans, setPlans] = useState(productionPlans);

@@ -241,3 +241,25 @@ export const dailyStageProductions: DailyStageProduction[] = [
     recorded_by: "system"
   }
 ];
+
+
+// data/mockData.ts
+// export const brickTypes = [
+//   { id: 1, name: '300x600mm Porcelain mài bóng', size: '300x600mm', type: 'porcelain' },
+//   { id: 2, name: '400x800mm Granite mài bóng', size: '400x800mm', type: 'granite' },
+//   { id: 3, name: '600x600mm Porcelain', size: '600x600mm', type: 'porcelain' },
+//   { id: 4, name: '500x500mm Ceramic Bóng', size: '500x500mm', type: 'ceramic' },
+//   { id: 5, name: '800x800mm Porcelain', size: '800x800mm', type: 'porcelain' },
+// ];
+
+// export const productionPlans = [
+//   { id: 1, plan_code: 'KHS-2023-001', description: 'Kế hoạch sản xuất tháng 6' },
+//   { id: 2, plan_code: 'KHS-2023-002', description: 'Kế hoạch sản xuất tháng 7' },
+//   { id: 3, plan_code: 'KHS-2023-003', description: 'Kế hoạch sản xuất quý 3' },
+// ];
+
+// export const productionLines = [
+//   { id: 1, name: 'Dây chuyền 1', description: 'Dây chuyền sản xuất gạch porcelain' },
+//   { id: 2, name: 'Dây chuyền 2', description: 'Dây chuyền sản xuất gạch granite' },
+//   { id: 3, name: 'Dây chuyền 3', description: 'Dây chuyền sản xuất gạch ceramic' },
+// ];
