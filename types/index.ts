@@ -17,22 +17,37 @@ export interface ProductionLine {
 
 export interface ProductionPlan {
   id: number;
-  plan_code: string;
-  production_line_id: number;
-  brick_type_id: number;
-  start_date: string;
-  end_date: string;
-  target_quantity: number;
-  actual_quantity: number;
-  completion_percentage: number;
-  status: 'draft' | 'approved' | 'in_progress' | 'completed' | 'cancelled';
-  created_by: string;
-  approved_by?: string;
-  approved_at?: string;
-  production_line: ProductionLine;
-  brick_type: BrickType;
+  planCode: string;
+  productionLineId: number;
+  brickTypeId: number;
+  customerId: number;
+  startDate: Date;
+  endDate: Date;
+  targetQuantity: number;
+  actualQuantity: number;
+  completionPercentage: number;
+  status: PlanStatus;
+  notes?: string;
+  createdBy: string;
+  approvedBy?: string;
+  approvedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  
+  // Include related data for display
+  productionLine?: {
+    id: number;
+    name: string;
+  };
+  brickType?: {
+    id: number;
+    name: string;
+  };
+  customer?: {
+    id: number;
+    name: string;
+  };
 }
-
 export interface StageAssignment {
   id: number;
   production_line_id: number;
@@ -166,3 +181,13 @@ export interface LoginResponse {
     sessionId: string;
   };
 }
+
+// types/index.ts
+export enum PlanStatus {
+  DRAFT = 'DRAFT',
+  APPROVED = 'APPROVED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED'
+}
+
